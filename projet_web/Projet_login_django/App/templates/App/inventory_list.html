@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventaire</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'App/inventory_list_style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'App/css/inventory_list_style.css' %}">
 </head>
 <body>
     <div class="container">
+        <div class="home-link">
+            <a href="{% url 'home' %}">Retour à l'accueil</a>
+        </div>
         <h1>Gestion de l'inventaire</h1>
 
         <!-- Ajouter le token CSRF ici -->
@@ -86,6 +89,6 @@
 <script>
     const inventoryListUrl = "{% url 'inventory_list' %}"; // Passer l'URL à une variable JavaScript
 </script>
-<script src="{% static 'App/inventory_list_script.js' %}"></script>
+<script src="{% static 'App/js/inventory_list_script.js' %}"></script>
 
 </html>
