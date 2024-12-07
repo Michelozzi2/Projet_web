@@ -198,13 +198,13 @@ def consume_item(request, item_id):
     # Vérifier si l'objet est consommable (potion, plante, clé)
     consommables = ['potion', 'plante', 'clé']
     if item.type in consommables:
-        if item.quantite > 0:
-            item.quantite -= 1
+        if item.quantity > 0:
+            item.quantity -= 1
             item.save()
-            messages.success(request, f"L'objet {item.nom} a été consommé.", extra_tags='alert-success')
+            messages.success(request, f"L'objet {item.name} a été consommé.", extra_tags='alert-success')
         else:
-            messages.error(request, f"L'objet {item.nom} n'a plus de quantité disponible à consommer.", extra_tags='alert-quantity')
+            messages.error(request, f"L'objet {item.name} n'a plus de quantité disponible à consommer.", extra_tags='alert-quantity')
     else:
-        messages.error(request, f"L'objet {item.nom} ne peut pas être consommé.",extra_tags='alert-danger')
+        messages.error(request, f"L'objet {item.name} ne peut pas être consommé.",extra_tags='alert-danger')
 
     return redirect('inventory_list')

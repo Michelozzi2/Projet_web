@@ -32,14 +32,14 @@ from .models import Item
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['nom', 'type', 'quantite']
+        fields = ['name', 'type', 'quantity']
         widgets = {
-            'nom': forms.TextInput(attrs={'placeholder': 'Nom de l\'objet'}),  
+            'name': forms.TextInput(attrs={'placeholder': 'Nom de l\'objet'}),  
             'type': forms.Select(choices=Item.TYPE_CHOICES),  # Utilisation d'une liste déroulante pour le type
-            'quantite': forms.NumberInput(attrs={'placeholder': 'Quantité'}),
+            'quantity': forms.NumberInput(attrs={'placeholder': 'Quantité'}),
         }
         labels = {
-            'nom': 'Nom de l\'objet',  
+            'name': 'Nom de l\'objet',  
             'type': 'Type de l\'objet',                  
-            'quantite': 'Quantité',      
+            'quantity': 'Quantité',      
         }
