@@ -44,9 +44,9 @@ class Race(models.Model):
     
 class Avatar(models.Model):
     name = models.CharField(max_length=100)
-    race = models.ForeignKey(Race, on_delete=models.CASCADE)
-    classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
-    element = models.CharField(max_length=100)
+    race = models.ForeignKey(Race, on_delete=models.CASCADE) # création avant
+    classe = models.ForeignKey(Classe, on_delete=models.CASCADE) # création avant 
+    element = models.CharField(max_length=100) #?
     lvl = models.IntegerField(default=1)
     stat = models.OneToOneField(Stat, on_delete=models.CASCADE)
     life = models.IntegerField()

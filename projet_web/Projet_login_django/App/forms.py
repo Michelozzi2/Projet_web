@@ -1,5 +1,5 @@
 from django import forms  # Importe le module de formulaires de Django
-from .models import User
+from .models import User, Hero
 
 # Définition d'un formulaire de connexion personnalisé.
 # Ce formulaire contient deux champs : un pour le nom d'utilisateur et un pour le mot de passe.
@@ -32,14 +32,34 @@ from .models import Item
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'type', 'quantity']
+        fields = ['name', 'type', 'space', 'quantity', 'stat']
+        # fields = ['name', 'type', 'quantity']
+        # widgets = {
+        #     'name': forms.TextInput(attrs={'placeholder': 'Nom de l\'objet'}),  
+        #     'type': forms.Select(choices=Item.TYPE_CHOICES),  # Utilisation d'une liste déroulante pour le type
+        #     'quantity': forms.NumberInput(attrs={'placeholder': 'Quantité'}),
+        # }
+        # labels = {
+        #     'name': 'Nom de l\'objet',  
+        #     'type': 'Type de l\'objet',                  
+        #     'quantity': 'Quantité',      
+        # }
+
+class HeroForm(forms.ModelForm):
+    class Meta:
+        model = Hero
+        fields = ['name', 'race', 'classe', 'element', 'profession']
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Nom de l\'objet'}),  
-            'type': forms.Select(choices=Item.TYPE_CHOICES),  # Utilisation d'une liste déroulante pour le type
-            'quantity': forms.NumberInput(attrs={'placeholder': 'Quantité'}),
+            'name': forms.TextInput(attrs={'placeholder': 'Nom du héros'}),
+            'race': forms.Select(),
+            'classe': forms.Select(),
+            'element': forms.TextInput(attrs={'placeholder': 'Élément'}),
+            'profession': forms.TextInput(attrs={'placeholder': 'Profession'}),
         }
         labels = {
-            'name': 'Nom de l\'objet',  
-            'type': 'Type de l\'objet',                  
-            'quantity': 'Quantité',      
+            'name': 'Nom',
+            'race': 'Race',
+            'classe': 'Classe',
+            'element': 'Élément',
+            'profession': 'Profession',
         }

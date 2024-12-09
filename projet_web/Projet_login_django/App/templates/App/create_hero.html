@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un Héros</title>
+</head>
+<body>
+    <div class="container">
+        <div class="home-link">
+            <a href="{% url 'home' %}">Retour à l'accueil</a>
+        </div>
+        <h1>Créer un Héros</h1>
+        
+        <form method="post" class="hero-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Créer</button>
+        </form>
+    </div>
+</body>
+</html>

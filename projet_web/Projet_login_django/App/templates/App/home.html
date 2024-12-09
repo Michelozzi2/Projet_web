@@ -16,7 +16,9 @@
         {% csrf_token %}
         <button type="submit">Déconnexion</button>
     </form>
+
     <a href="{% url 'inventory_list' %}">Voir la liste des objets</a>
+    <a href="{% url 'create_hero' %}">Création du héros</a>
     
 </body>
 </html>

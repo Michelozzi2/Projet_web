@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import ItemForm, SignUpForm
-from .models import Item, User
+from .forms import ItemForm, SignUpForm, HeroForm
+from .models import Item, User, Hero
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -69,26 +69,25 @@ def inventory_list(request):
         return redirect('login')
     
     # Récupérer l'utilisateur et ses items
+
     user = User.objects.get(pk=user_id)
-    items = user.items.all()  # Récupérer les items de l'utilisateur
+    if user.objects.get(user_id=user_id).exists():
+        items = user.items.all()  # Récupérer les items de l'utilisateur
     
     return render(request, 'App/inventory_list.html', {'items': items})
 
 
 # Vue pour afficher la liste des objets d'inventaire
 def inventory_list_view(request):
-    user_id = request.session.get('user_id')
-
-    if not user_id:
-        return redirect('login')
+    user_id = request.user.id  # Récupérer l'ID de l'utilisateur connecté
 
     # Filtrer les objets par utilisateur
-    items = Item.objects.filter(user_id=user_id)
+    items = Item.objects.filter(bag__hero__user_id=user_id)
 
     # Rechercher un objet par nom
     search_query = request.GET.get('search', '')
     if search_query:
-        items = items.filter(nom__icontains=search_query)
+        items = items.filter(name__icontains=search_query)
 
     # Trier par catégorie
     sort_query = request.GET.get('sort', '')
@@ -105,23 +104,20 @@ def inventory_list_view(request):
 
 
 def add_item(request):
-    user_id = request.session.get('user_id')
-    print(f"User ID from session: {user_id}")  # Vérifiez l'ID de l'utilisateur
-
-    if not user_id:
-        return redirect('login')
+    user_id = request.user.id  # Utiliser l'ID de l'utilisateur connecté
 
     if request.method == 'POST':
         form = ItemForm(request.POST)
         if form.is_valid():
             new_item = form.save(commit=False)
             try:
-                user = User.objects.get(user_id=user_id)
-                new_item.user = user
+                # Récupérer le sac de l'utilisateur connecté
+                bag = Bag.objects.get(hero__user_id=user_id)
+                new_item.bag = bag
                 new_item.save()
                 return redirect('inventory_list')
-            except User.DoesNotExist:
-                print(f"User with ID {user_id} does not exist.")
+            except Bag.DoesNotExist:
+                print(f"Bag for user with ID {user_id} does not exist.")
         else:
             print("Form is not valid.")
     else:
@@ -208,3 +204,31 @@ def consume_item(request, item_id):
         messages.error(request, f"L'objet {item.name} ne peut pas être consommé.",extra_tags='alert-danger')
 
     return redirect('inventory_list')
+
+def create_hero(request):
+    user_id = request.session.get('user_id')
+    
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "L'utilisateur n'existe pas.")
+        return redirect('home')
+    
+    # Vérifier si l'utilisateur a déjà un héros
+    if Hero.objects.filter(user=user).exists():
+        messages.error(request, 'Vous avez déjà un héros.')
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = HeroForm(request.POST)
+    
+        if form.is_valid():
+            hero = form.save(commit=False)
+            hero.user = user
+            hero.save()
+            messages.success(request, 'Héros créé avec succès.')
+            return redirect('home')
+    else:
+        form = HeroForm()
+
+    return render(request, 'App/create_hero.html', {'form': form})
