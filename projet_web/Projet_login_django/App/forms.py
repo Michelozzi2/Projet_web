@@ -1,5 +1,5 @@
 from django import forms  # Importe le module de formulaires de Django
-from .models import User, Hero
+from .models import User, Hero, Race, Classe
 
 # Définition d'un formulaire de connexion personnalisé.
 # Ce formulaire contient deux champs : un pour le nom d'utilisateur et un pour le mot de passe.
@@ -51,8 +51,8 @@ class HeroForm(forms.ModelForm):
         fields = ['name', 'race', 'classe', 'element', 'profession']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Nom du héros'}),
-            'race': forms.Select(),
-            'classe': forms.Select(),
+            'race': forms.Select(attrs={'class': 'form-control'}),
+            'classe': forms.Select(attrs={'class': 'form-control'}),
             'element': forms.TextInput(attrs={'placeholder': 'Élément'}),
             'profession': forms.TextInput(attrs={'placeholder': 'Profession'}),
         }
@@ -63,3 +63,10 @@ class HeroForm(forms.ModelForm):
             'element': 'Élément',
             'profession': 'Profession',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['race'].queryset = Race.objects.all()
+        self.fields['classe'].queryset = Classe.objects.all()
+        self.fields['race'].label_from_instance = lambda obj: obj.name
+        self.fields['classe'].label_from_instance = lambda obj: obj.name
