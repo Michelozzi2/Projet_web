@@ -79,10 +79,10 @@ def signup_view(request):
 
 # Vue pour afficher la liste des objets d'inventaire
 def hero_inventory(request, hero_id):
-    hero = get_object_or_404(Hero, id=hero_id, user=request.session.get('user_id'))  
+    hero = get_object_or_404(Hero, id=hero_id, user=request.session.get('user_id'))  # Récupérer le héros spécifique de l'utilisateur connecté
 
     # Filtrer les objets par héros
-    items = Item.objects.filter(bag__hero=hero)
+    items = Item.objects.filter(bags_containing_item__hero=hero)
 
     # Rechercher un objet par nom
     search_query = request.GET.get('search', '')
@@ -101,108 +101,6 @@ def hero_inventory(request, hero_id):
 
     # Renvoyer la page complète pour les requêtes non-AJAX
     return render(request, 'App/hero_inventory.html', {'hero': hero, 'items': items})
-
-def add_item(request):
-    user_id = request.user.id  # Utiliser l'ID de l'utilisateur connecté
-
-    if request.method == 'POST':
-        form = ItemForm(request.POST)
-        if form.is_valid():
-            new_item = form.save(commit=False)
-            try:
-                # Récupérer le sac de l'utilisateur connecté
-                bag = Bag.objects.get(hero__user_id=user_id)
-                new_item.bag = bag
-                new_item.save()
-                return redirect('inventory_list')
-            except Bag.DoesNotExist:
-                print(f"Bag for user with ID {user_id} does not exist.")
-        else:
-            print("Form is not valid.")
-    else:
-        form = ItemForm()
-
-    return render(request, 'App/add_item.html', {'form': form})
-
-
-# Mettre à jour la quantité d'un objet
-def update_item(request, item_id):
-    # Récupérer l'ID de l'utilisateur depuis la session
-    user_id = request.session.get('user_id')
-    
-    if not user_id:
-        # Redirige vers la page de connexion si l'utilisateur n'est pas connecté
-        return redirect('login')
-
-    # Récupérer l'objet associé à l'utilisateur
-    item = get_object_or_404(Item, id=item_id, user_id=user_id)
-
-    if request.method == 'POST':
-        # Passer les données POST au formulaire avec l'instance de l'objet
-        form = ItemForm(request.POST, instance=item)
-        
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'L\'objet a été mis à jour avec succès.')
-            return redirect('inventory_list')
-    else:
-        # Afficher le formulaire avec l'instance de l'objet
-        form = ItemForm(instance=item)
-
-    return render(request, 'App/update_item.html', {'form': form, 'item': item})
-
-
-# Vue pour supprimer un objet de l'inventaire
-def delete_item(request, item_id):
-    # Récupérer l'utilisateur connecté depuis la session
-    user_id = request.session.get('user_id')
-    if not user_id:
-        # Si l'utilisateur n'est pas connecté, le rediriger vers la page de connexion
-        return redirect('login')
-
-    # Récupérer l'item à supprimer, ou retourner 404 si l'item n'existe pas
-    item = get_object_or_404(Item, pk=item_id)
-
-    # Vérifier si l'item appartient à l'utilisateur connecté
-    if item.user_id != user_id:
-        messages.error(request, "Vous n'êtes pas autorisé à supprimer cet objet.")
-        return redirect('inventory_list')
-
-    if request.method == 'POST':
-        # Supprimer l'item
-        item.delete()
-        messages.success(request, "L'objet a été supprimé avec succès.")
-        return redirect('inventory_list')
-
-    # Afficher la page de confirmation pour supprimer l'objet
-    return render(request, 'App/delete_item.html', {'item': item})
-    
-
-# Consommer un objet (diminuer la quantité)
-def consume_item(request, item_id):
-    # Récupérer l'ID de l'utilisateur depuis la session
-    user_id = request.session.get('user_id')
-
-    if not user_id:
-        # Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-        return redirect('login')
-
-    # Récupérer l'objet associé à l'utilisateur
-    item = get_object_or_404(Item, id=item_id, user_id=user_id)
-
-    # Vérifier si l'objet est consommable (potion, plante, clé)
-    consommables = ['potion', 'plante', 'clé']
-    if item.type in consommables:
-        if item.quantity > 0:
-            item.quantity -= 1
-            item.save()
-            messages.success(request, f"L'objet {item.name} a été consommé.", extra_tags='alert-success')
-        else:
-            messages.error(request, f"L'objet {item.name} n'a plus de quantité disponible à consommer.", extra_tags='alert-quantity')
-    else:
-        messages.error(request, f"L'objet {item.name} ne peut pas être consommé.",extra_tags='alert-danger')
-
-    return redirect('inventory_list')
 
 def create_hero(request):
     user_id = request.session.get('user_id')
@@ -237,3 +135,106 @@ def hero_list(request):
     
     heroes = user.heroes.all()  
     return render(request, 'App/hero_list.html', {'heroes': heroes})
+
+# def add_item(request):
+#     user_id = request.user.id  # Utiliser l'ID de l'utilisateur connecté
+
+#     if request.method == 'POST':
+#         form = ItemForm(request.POST)
+#         if form.is_valid():
+#             new_item = form.save(commit=False)
+#             try:
+#                 # Récupérer le sac de l'utilisateur connecté
+#                 bag = Bag.objects.get(hero__user_id=user_id)
+#                 new_item.bag = bag
+#                 new_item.save()
+#                 return redirect('inventory_list')
+#             except Bag.DoesNotExist:
+#                 print(f"Bag for user with ID {user_id} does not exist.")
+#         else:
+#             print("Form is not valid.")
+#     else:
+#         form = ItemForm()
+
+#     return render(request, 'App/add_item.html', {'form': form})
+
+
+# Mettre à jour la quantité d'un objet
+# def update_item(request, item_id):
+#     # Récupérer l'ID de l'utilisateur depuis la session
+#     user_id = request.session.get('user_id')
+    
+#     if not user_id:
+#         # Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+#         return redirect('login')
+
+#     # Récupérer l'objet associé à l'utilisateur
+#     item = get_object_or_404(Item, id=item_id, user_id=user_id)
+
+#     if request.method == 'POST':
+#         # Passer les données POST au formulaire avec l'instance de l'objet
+#         form = ItemForm(request.POST, instance=item)
+        
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'L\'objet a été mis à jour avec succès.')
+#             return redirect('inventory_list')
+#     else:
+#         # Afficher le formulaire avec l'instance de l'objet
+#         form = ItemForm(instance=item)
+
+#     return render(request, 'App/update_item.html', {'form': form, 'item': item})
+
+
+# # Vue pour supprimer un objet de l'inventaire
+# def delete_item(request, item_id):
+#     # Récupérer l'utilisateur connecté depuis la session
+#     user_id = request.session.get('user_id')
+#     if not user_id:
+#         # Si l'utilisateur n'est pas connecté, le rediriger vers la page de connexion
+#         return redirect('login')
+
+#     # Récupérer l'item à supprimer, ou retourner 404 si l'item n'existe pas
+#     item = get_object_or_404(Item, pk=item_id)
+
+#     # Vérifier si l'item appartient à l'utilisateur connecté
+#     if item.user_id != user_id:
+#         messages.error(request, "Vous n'êtes pas autorisé à supprimer cet objet.")
+#         return redirect('inventory_list')
+
+#     if request.method == 'POST':
+#         # Supprimer l'item
+#         item.delete()
+#         messages.success(request, "L'objet a été supprimé avec succès.")
+#         return redirect('inventory_list')
+
+#     # Afficher la page de confirmation pour supprimer l'objet
+#     return render(request, 'App/delete_item.html', {'item': item})
+    
+
+# # Consommer un objet (diminuer la quantité)
+# def consume_item(request, item_id):
+#     # Récupérer l'ID de l'utilisateur depuis la session
+#     user_id = request.session.get('user_id')
+
+#     if not user_id:
+#         # Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+#         return redirect('login')
+
+#     # Récupérer l'objet associé à l'utilisateur
+#     item = get_object_or_404(Item, id=item_id, user_id=user_id)
+
+#     # Vérifier si l'objet est consommable (potion, plante, clé)
+#     consommables = ['potion', 'plante', 'clé']
+#     if item.type in consommables:
+#         if item.quantity > 0:
+#             item.quantity -= 1
+#             item.save()
+#             messages.success(request, f"L'objet {item.name} a été consommé.", extra_tags='alert-success')
+#         else:
+#             messages.error(request, f"L'objet {item.name} n'a plus de quantité disponible à consommer.", extra_tags='alert-quantity')
+#     else:
+#         messages.error(request, f"L'objet {item.name} ne peut pas être consommé.",extra_tags='alert-danger')
+
+#     return redirect('inventory_list')
+

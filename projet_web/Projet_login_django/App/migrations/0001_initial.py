@@ -110,6 +110,7 @@ class Migration(migrations.Migration):
             name='Hero',
             fields=[
                 ('avatar_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='App.avatar')),
+                ('hero_id', models.AutoField(primary_key=True)),
                 ('xp', models.IntegerField(default=1)),
                 ('profession', models.CharField(max_length=100)),
                 ('bag', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='hero_bag', to='App.bag')),
