@@ -8,17 +8,26 @@
     <link rel="stylesheet" type="text/css" href="{% static 'App/css/home_style.css' %}">
 </head>
 <body>
-    <h2>Bienvenue {{ user_login }}!</h2>
-    <p>Vous êtes maintenant connecté.</p>
+    <div class="container">
+        <header>
+            <h1>Bienvenue, {{ user_login }}!</h1>
+            <p>Vous êtes maintenant connecté.</p>
+        </header>
 
-    <!-- Formulaire de déconnexion -->
-    <form method="POST" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Déconnexion</button>
-    </form>
+        <nav>
+            <ul>
+                <li><a href="{% url 'create_hero' %}">Création des héros</a></li>
+                <li><a href="{% url 'hero_list' %}">Voir mes héros</a></li>
+            </ul>
+        </nav>
 
-    <a href="{% url 'inventory_list' %}">Voir la liste des objets</a>
-    <a href="{% url 'create_hero' %}">Création du héros</a>
-    
+        <footer>
+            <!-- Formulaire de déconnexion -->
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">Déconnexion</button>
+            </form>
+        </footer>
+    </div>
 </body>
 </html>

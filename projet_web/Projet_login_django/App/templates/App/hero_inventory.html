@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventaire de {{ hero.name }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'App/css/hero_inventory_style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="home-link">
+            <a href="{% url 'hero_list' %}">Retour à la liste des héros</a>
+        </div>
+        <h1>Inventaire de {{ hero.name }}</h1>
+        
+        <form id="search-form" class="search-form">
+            <input type="text" id="search-input" name="search" placeholder="Rechercher un objet..." value="">
+        </form>
+
+        <form id="sort-form" class="sort-form">
+            <select id="sort-select" name="sort">
+                <option value="">Trier par catégorie</option>
+                <option value="potion">Potion</option>
+                <option value="plante">Plante</option>
+                <option value="arme">Arme</option>
+                <option value="clé">Clé</option>
+                <option value="armure">Armure</option>
+            </select>
+        </form>
+
+        <ul class="inventory-list">
+            {% for item in items %}
+                <li>
+                    <h2>{{ item.name }}</h2>
+                    <p>Type: {{ item.get_type_display }}</p>
+                    <p>Quantité: {{ item.quantity }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

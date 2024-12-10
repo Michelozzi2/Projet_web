@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Héros</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'App/css/hero_list_style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="home-link">
+            <a href="{% url 'home' %}">Retour à l'accueil</a>
+        </div>
+        <h1>Mes Héros</h1>
+        
+        <ul class="hero-list">
+            {% for hero in heroes %}
+                <li>
+                    <h2><a href="{% url 'hero_inventory' hero.hero_id %}">{{ hero.name }}</a></h2>
+                    <p>Race: {{ hero.race.name }}</p>
+                    <p>Classe: {{ hero.classe.name }}</p>
+                    <p>Élément: {{ hero.element }}</p>
+                    <p>Profession: {{ hero.profession }}</p>
+                    <p>Niveau: {{ hero.lvl }}</p>
+                    <p>XP: {{ hero.xp }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

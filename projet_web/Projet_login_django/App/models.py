@@ -62,6 +62,7 @@ class Avatar(models.Model):
         
         
 class Hero(Avatar):
+    hero_id = models.AutoField(primary_key=True)
     xp = models.IntegerField(default=1)
     profession = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='heroes')
@@ -102,7 +103,6 @@ class Item(models.Model):
     space = models.IntegerField()
     quantity = models.IntegerField()
     stat = models.OneToOneField('Stat', on_delete=models.CASCADE)
-    bag = models.ForeignKey('Bag', on_delete=models.CASCADE, related_name='items_in_bag', null=True)
 
     def __str__(self):
         return self.name

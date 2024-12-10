@@ -62,27 +62,27 @@ def signup_view(request):
     return render(request, 'App/signup.html', {'form': form})
 
 # Lister tous les objets de l'inventaire
-def inventory_list(request):
-    user_id = request.session.get('user_id')  # Récupérer l'ID utilisateur depuis la session
-    if not user_id:
-        # Si l'utilisateur n'est pas connecté, le rediriger vers la page de login
-        return redirect('login')
+# def inventory_list(request):
+#     user_id = request.session.get('user_id')  # Récupérer l'ID utilisateur depuis la session
+#     if not user_id:
+#         # Si l'utilisateur n'est pas connecté, le rediriger vers la page de login
+#         return redirect('login')
     
-    # Récupérer l'utilisateur et ses items
+#     # Récupérer l'utilisateur et ses items
 
-    user = User.objects.get(pk=user_id)
-    if user.objects.get(user_id=user_id).exists():
-        items = user.items.all()  # Récupérer les items de l'utilisateur
+#     user = User.objects.get(pk=user_id)
+#     if user.objects.get(user_id=user_id).exists():
+#         items = user.items.all()  # Récupérer les items de l'utilisateur
     
-    return render(request, 'App/inventory_list.html', {'items': items})
+#     return render(request, 'App/inventory_list.html', {'items': items})
 
 
 # Vue pour afficher la liste des objets d'inventaire
-def inventory_list_view(request):
-    user_id = request.user.id  # Récupérer l'ID de l'utilisateur connecté
+def hero_inventory(request, hero_id):
+    hero = get_object_or_404(Hero, id=hero_id, user=request.session.get('user_id'))  
 
-    # Filtrer les objets par utilisateur
-    items = Item.objects.filter(bag__hero__user_id=user_id)
+    # Filtrer les objets par héros
+    items = Item.objects.filter(bag__hero=hero)
 
     # Rechercher un objet par nom
     search_query = request.GET.get('search', '')
@@ -100,8 +100,7 @@ def inventory_list_view(request):
         return JsonResponse({'items_html': items_html})
 
     # Renvoyer la page complète pour les requêtes non-AJAX
-    return render(request, 'App/inventory_list.html', {'items': items})
-
+    return render(request, 'App/hero_inventory.html', {'hero': hero, 'items': items})
 
 def add_item(request):
     user_id = request.user.id  # Utiliser l'ID de l'utilisateur connecté
@@ -214,11 +213,6 @@ def create_hero(request):
         messages.error(request, "L'utilisateur n'existe pas.")
         return redirect('home')
     
-    # Vérifier si l'utilisateur a déjà un héros
-    if Hero.objects.filter(user=user).exists():
-        messages.error(request, 'Vous avez déjà un héros.')
-        return redirect('home')
-    
     if request.method == 'POST':
         form = HeroForm(request.POST)
     
@@ -232,3 +226,14 @@ def create_hero(request):
         form = HeroForm()
 
     return render(request, 'App/create_hero.html', {'form': form})
+
+def hero_list(request):
+    user_id = request.session.get('user_id')
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "L'utilisateur n'existe pas.")
+        return redirect('home')
+    
+    heroes = user.heroes.all()  
+    return render(request, 'App/hero_list.html', {'heroes': heroes})
