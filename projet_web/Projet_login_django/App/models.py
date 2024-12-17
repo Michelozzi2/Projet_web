@@ -35,12 +35,34 @@ class Stat(models.Model):
         super().save(*args, **kwargs)
         
 class Classe(models.Model):
-    name = models.CharField(max_length=100)
+    CLASS_CHOICES = [
+        ('guerrier', 'Guerrier'),
+        ('mage', 'Mage'),
+        ('archer', 'Archer'),
+        ('voleur', 'Voleur'),
+        ('pretre', 'Prêtre'),
+    ]
+    
+    name = models.CharField(max_length=100, choices=CLASS_CHOICES)
     stat = models.OneToOneField(Stat, on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.get_name_display()
+    
 class Race(models.Model):
-    name = models.CharField(max_length=100)
+    RACE_CHOICES = [
+        ('humain', 'Humain'),
+        ('elfe', 'Elfe'),
+        ('nain', 'Nain'),
+        ('orc', 'Orc'),
+        ('gobelin', 'Gobelin'),
+    ]
+    
+    name = models.CharField(max_length=100, choices=RACE_CHOICES)
     stat = models.OneToOneField(Stat, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.get_name_display()
     
 class Avatar(models.Model):
     name = models.CharField(max_length=100)
@@ -107,15 +129,30 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
-class Equipment(Item):
-    class_list = models.JSONField()  # Assuming class_list is a JSON field
-    place = models.CharField(max_length=100)
+class Equipment(models.Model):
+    EQUIPMENT_CHOICES = [
+        ('bottes', 'Bottes'),
+        ('jambieres', 'Jambières'),
+        ('plastron', 'Plastron'),
+        ('casque', 'Casque'),
+        ('gants', 'Gants'),
+        ('arme', 'Arme'),
+        ('bouclier', 'Bouclier'),
+    ]
+
+    name = models.CharField(max_length=100)
+    equipment_type = models.CharField(max_length=50, choices=EQUIPMENT_CHOICES)
+    space = models.IntegerField()
+    quantity = models.IntegerField(default=1)
+    stat = models.OneToOneField('Stat', on_delete=models.CASCADE)
     hero = models.OneToOneField('Hero', on_delete=models.CASCADE, related_name='hero_equipment')
 
+    def __str__(self):
+        return f"{self.name} - {self.get_equipment_type_display()}"
+    
 class Bag(models.Model):
     size_max = models.IntegerField()
     items = models.ManyToManyField(Item, related_name='bags_containing_item')
-    size = models.IntegerField(default=0)
     hero = models.OneToOneField('Hero', on_delete=models.CASCADE, related_name='hero_bag')
 
     def add_item(self, item):

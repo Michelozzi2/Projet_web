@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .forms import ItemForm, SignUpForm, HeroForm
-from .models import Item, User, Hero
+from .forms import SignUpForm, HeroForm
+from .models import Equipment, Item, User, Hero
 from django.contrib.auth.hashers import make_password, check_password
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -64,28 +64,38 @@ def signup_view(request):
 
 # Vue pour afficher la liste des objets d'inventaire
 def hero_inventory(request, hero_id):
-    hero = get_object_or_404(Hero, id=hero_id, user=request.session.get('user_id'))  # Récupérer le héros spécifique de l'utilisateur connecté
+    hero = get_object_or_404(Hero, id=hero_id, user=request.session.get('user_id'))
 
-    # Filtrer les objets par héros
+    # Filtrer les objets et équipements par héros
     items = Item.objects.filter(bags_containing_item__hero=hero)
+    equipments = Equipment.objects.filter(hero=hero)
 
-    # Rechercher un objet par nom
+    # Rechercher par nom
     search_query = request.GET.get('search', '')
     if search_query:
         items = items.filter(name__icontains=search_query)
+        equipments = equipments.filter(name__icontains=search_query)
 
-    # Trier par catégorie
+    # Trier par type
     sort_query = request.GET.get('sort', '')
     if sort_query:
-        items = items.filter(type=sort_query)
+        if sort_query == 'item':
+            equipments = Equipment.objects.none()
+        elif sort_query == 'equipment':
+            items = Item.objects.none()
 
-    # Si la requête est AJAX, renvoyer uniquement les lignes du tableau
+    # Requête AJAX
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        items_html = render_to_string('App/inventory_table.html', {'items': items})
+        context = {'items': items, 'equipments': equipments}
+        items_html = render_to_string('App/inventory_table.html', context)
         return JsonResponse({'items_html': items_html})
 
-    # Renvoyer la page complète pour les requêtes non-AJAX
-    return render(request, 'App/hero_inventory.html', {'hero': hero, 'items': items})
+    # Rendu normal
+    return render(request, 'App/hero_inventory.html', {
+        'hero': hero,
+        'items': items,
+        'equipments': equipments
+    })
 
 def create_hero(request):
     user_id = request.session.get('user_id')

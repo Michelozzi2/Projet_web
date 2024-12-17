@@ -27,23 +27,6 @@ class SignUpForm(forms.ModelForm):
         }
     user_password = forms.CharField(widget=forms.PasswordInput)  # Masque le mot de passe
 
-from .models import Item
-
-class ItemForm(forms.ModelForm):
-    class Meta:
-        model = Item
-        fields = ['name', 'type', 'space', 'quantity', 'stat']
-        # fields = ['name', 'type', 'quantity']
-        # widgets = {
-        #     'name': forms.TextInput(attrs={'placeholder': 'Nom de l\'objet'}),  
-        #     'type': forms.Select(choices=Item.TYPE_CHOICES),  # Utilisation d'une liste déroulante pour le type
-        #     'quantity': forms.NumberInput(attrs={'placeholder': 'Quantité'}),
-        # }
-        # labels = {
-        #     'name': 'Nom de l\'objet',  
-        #     'type': 'Type de l\'objet',                  
-        #     'quantity': 'Quantité',      
-        # }
 
 class HeroForm(forms.ModelForm):
     class Meta:

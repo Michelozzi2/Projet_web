@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventaire de {{ hero.name }}</title>
+    <title>Inventaire du Héros</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'App/css/hero_inventory_style.css' %}">
+    <link rel="stylesheet" href="{% static 'App/css/hero_inventory_style.css' %}">
 </head>
 <body>
     <div class="container">
@@ -13,31 +13,53 @@
             <a href="{% url 'hero_list' %}">Retour à la liste des héros</a>
         </div>
         <h1>Inventaire de {{ hero.name }}</h1>
-        
-        <form id="search-form" class="search-form">
-            <input type="text" id="search-input" name="search" placeholder="Rechercher un objet..." value="">
-        </form>
 
-        <form id="sort-form" class="sort-form">
-            <select id="sort-select" name="sort">
-                <option value="">Trier par catégorie</option>
-                <option value="potion">Potion</option>
-                <option value="plante">Plante</option>
-                <option value="arme">Arme</option>
-                <option value="clé">Clé</option>
-                <option value="armure">Armure</option>
+        <div class="filter-section">
+            <input type="text" id="searchInput" placeholder="Rechercher un objet...">
+            <select id="typeFilter">
+                <option value="all">Tous les types</option>
+                <option value="item">Items</option>
+                <option value="equipment">Équipements</option>
             </select>
-        </form>
+        </div>
 
-        <ul class="inventory-list">
-            {% for item in items %}
-                <li>
-                    <h2>{{ item.name }}</h2>
-                    <p>Type: {{ item.get_type_display }}</p>
-                    <p>Quantité: {{ item.quantity }}</p>
-                </li>
-            {% endfor %}
-        </ul>
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Catégorie</th>
+                    <th>Quantité</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr class="item-row" data-type="item">
+                    <td>{{ item.name }}</td>
+                    <td>Item</td>
+                    <td>{{ item.get_type_display }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>
+                        <button class="action-btn">Utiliser</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+                {% for equipment in equipments %}
+                <tr class="equipment-row" data-type="equipment">
+                    <td>{{ equipment.name }}</td>
+                    <td>Équipement</td>
+                    <td>{{ equipment.get_equipment_type_display }}</td>
+                    <td>{{ equipment.quantity }}</td>
+                    <td>
+                        <button class="action-btn">Équiper</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    <script src="{% static 'App/js/hero_inventory.js' %}"></script>
 </body>
 </html>

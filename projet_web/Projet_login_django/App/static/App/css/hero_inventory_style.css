@@ -1,0 +1,64 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.home-link {
+    margin-bottom: 20px;
+}
+
+.home-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#searchInput, #typeFilter {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#inventoryTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#inventoryTable th,
+#inventoryTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#inventoryTable th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.item-row:hover,
+.equipment-row:hover {
+    background-color: #f8f8f8;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
