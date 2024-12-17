@@ -62,3 +62,34 @@ footer {
     background-color: #dc3545;
     color: #fff;
 }
+
+/* ...existing code... */
+
+.combat-button-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.combat-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #ff4444;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.combat-button:hover {
+    background-color: #ff6666;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.combat-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+

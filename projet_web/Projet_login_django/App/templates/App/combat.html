@@ -1,0 +1,38 @@
+/combat.html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combat</title>
+    <link rel="stylesheet" href="{% static 'App/css/combat.css' %}">
+</head>
+<body>
+    <div class="combat-container">
+        <div class="hero1-stats">
+            <h2>{{ hero1.name }}</h2>
+            <p>PV: <span id="hero1-life">{{ hero1.life }}</span>/{{ hero1.stat.life_point }}</p>
+            <p>Force: {{ hero1.stat.strength }}</p>
+            <p>Défense: {{ hero1.stat.defense }}</p>
+        </div>
+        
+        <div class="combat-arena">
+            <div class="versus">VS</div>
+        </div>
+        
+        <div class="hero2-stats">
+            <h2>{{ hero2.name }}</h2>
+            <p>PV: <span id="hero2-life">{{ hero2.life }}</span>/{{ hero2.stat.life_point }}</p>
+            <p>Force: {{ hero2.stat.strength }}</p>
+            <p>Défense: {{ hero2.stat.defense }}</p>
+        </div>
+        
+        <div class="combat-actions">
+            <button id="attack-btn" data-attacker="{{ hero1.id }}">Attaquer</button>
+        </div>
+        
+        <div id="combat-log"></div>
+    </div>
+    <script src="{% static 'App/js/combat.js' %}"></script>
+</body>
+</html>

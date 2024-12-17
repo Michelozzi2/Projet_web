@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from .forms import SignUpForm, HeroForm
@@ -130,3 +131,55 @@ def hero_list(request):
     
     heroes = user.heroes.all()  
     return render(request, 'App/hero_list.html', {'heroes': heroes})
+
+
+# ...existing code...
+
+def combat_view(request, hero1_id, hero2_id):
+    hero1 = get_object_or_404(Hero, id=hero1_id, user=request.session.get('user_id'))
+    hero2 = get_object_or_404(Hero, id=hero2_id)
+    
+    def calculate_damage(attacker, defender):
+        base_damage = attacker.stat.attack
+        random_modifier = random.uniform(0.8, 1.2)
+        damage_reduction = defender.stat.defense / 100
+        return max(1, int((base_damage * random_modifier) * (1 - damage_reduction)))
+
+    if request.method == 'POST':
+        # Logique de tour de combat via AJAX
+        attacker = hero1 if request.POST.get('attacker') == str(hero1.id) else hero2
+        defender = hero2 if attacker == hero1 else hero1
+        
+        # Calcul de l'initiative
+        if random.randint(1, attacker.stat.speed + defender.stat.speed) <= attacker.stat.speed:
+            damage = calculate_damage(attacker, defender)
+            defender.life -= damage
+            defender.save()
+            
+            if defender.life <= 0:
+                winner = attacker
+                return JsonResponse({
+                    'finished': True,
+                    'winner': winner.name,
+                    'message': f"{winner.name} a gagné le combat!"
+                })
+            
+            return JsonResponse({
+                'damage': damage,
+                'defender_life': defender.life,
+                'attacker': attacker.name,
+                'defender': defender.name
+            })
+            
+        return JsonResponse({'missed': True})
+
+    # Réinitialiser les PV au début du combat
+    hero1.life = hero1.stat.life_point
+    hero2.life = hero2.stat.life_point
+    hero1.save()
+    hero2.save()
+    
+    return render(request, 'App/combat.html', {
+        'hero1': hero1,
+        'hero2': hero2
+    })
