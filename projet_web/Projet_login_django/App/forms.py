@@ -1,5 +1,5 @@
 from django import forms  # Importe le module de formulaires de Django
-from .models import User, Hero
+from .models import User, Hero, Race, Classe
 
 # Définition d'un formulaire de connexion personnalisé.
 # Ce formulaire contient deux champs : un pour le nom d'utilisateur et un pour le mot de passe.
@@ -26,7 +26,6 @@ class SignUpForm(forms.ModelForm):
             'user_password': 'Mot de passe',       # Étiquette pour le champ mot de passe
         }
     user_password = forms.CharField(widget=forms.PasswordInput)  # Masque le mot de passe
-
 
 class HeroForm(forms.ModelForm):
     class Meta:
