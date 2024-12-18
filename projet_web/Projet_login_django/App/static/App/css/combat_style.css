@@ -1,63 +1,130 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #1a1a1a;
-    color: #ffffff;
-    margin: 0;
-    padding: 20px;
-}
-
 .combat-container {
-    max-width: 1000px;
-    margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     gap: 20px;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+    background: linear-gradient(to bottom, #2c3e50, #34495e);
+    border-radius: 15px;
+    color: white;
 }
 
 .hero1-stats, .hero2-stats {
-    background-color: #333;
+    background: rgba(0, 0, 0, 0.3);
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.hero1-stats h2, .hero2-stats h2 {
+    color: #9c7878;
     text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .combat-arena {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.versus {
-    font-size: 48px;
-    color: #ff4444;
-    text-shadow: 0 0 10px #ff0000;
-}
-
-.combat-actions {
-    grid-column: 1 / -1;
     text-align: center;
 }
 
+.versus {
+    font-size: 3em;
+    color: #e74c3c;
+    margin: 20px 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.combat-log {
+    height: 300px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-family: monospace;
+}
+
+.combat-log p {
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.combat-log .winner {
+    color: #2ecc71;
+    font-weight: bold;
+    background: rgba(46, 204, 113, 0.2);
+}
+
+.combat-log .missed {
+    color: #95a5a6;
+    font-style: italic;
+}
+
+.combat-log .hit {
+    color: #e74c3c;
+    background: rgba(231, 76, 60, 0.2);
+}
+
+.combat-log .start {
+    color: #3498db;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.combat-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
 #attack-btn {
-    padding: 10px 20px;
-    font-size: 18px;
-    background-color: #ff4444;
+    background: #e74c3c;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 12px 30px;
+    font-size: 1.2em;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 #attack-btn:hover {
-    background-color: #ff6666;
+    background: #c0392b;
+    transform: scale(1.05);
 }
 
-#combat-log {
-    grid-column: 1 / -1;
-    background-color: #333;
-    padding: 20px;
-    border-radius: 8px;
-    min-height: 200px;
-    overflow-y: auto;
+#attack-btn:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Scrollbar personnalisée */
+.combat-log::-webkit-scrollbar {
+    width: 8px;
+}
+
+.combat-log::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.combat-log::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* Animation pour les messages */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.combat-log p {
+    animation: fadeIn 0.3s ease-out forwards;
 }

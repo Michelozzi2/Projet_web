@@ -21,14 +21,7 @@
             </ul>
         </nav>
 
-        <div class="combat-button-container">
-            <a href="{% url 'combat' hero1_id=user.heroes.first.id hero2_id=1 %}" class="combat-button">
-                Commencer un Combat
-            </a>
-        </div>
-
         <footer>
-            <!-- Formulaire de déconnexion -->
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="btn-logout">Déconnexion</button>

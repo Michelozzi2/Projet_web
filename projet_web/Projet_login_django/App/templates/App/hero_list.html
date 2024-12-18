@@ -1,32 +1,67 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mes Héros</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'App/css/hero_list_style.css' %}">
-</head>
-<body>
+    <link rel="stylesheet" type="text/css" href="{% static 'App/css/hero_list_style.css' %}" />
+  </head>
+  <body>
     <div class="container">
-        <div class="home-link">
-            <a href="{% url 'home' %}">Retour à l'accueil</a>
-        </div>
-        <h1>Mes Héros</h1>
-        
-        <ul class="hero-list">
+      <div class="home-link">
+        <a href="{% url 'home' %}">Retour à l'accueil</a>
+      </div>
+      <h1>Mes Héros</h1>
+
+      <div class="combat-section">
+        <h2>Combat</h2>
+        <form id="combat-form">
+          <select name="hero1" id="hero1" required>
+            <option value="">Sélectionnez le premier héros</option>
             {% for hero in heroes %}
-                <li>
-                    <h2><a href="{% url 'hero_inventory' hero.hero_id %}">{{ hero.name }}</a></h2>
-                    <p>Race: {{ hero.race.name }}</p>
-                    <p>Classe: {{ hero.classe.name }}</p>
-                    <p>Élément: {{ hero.element }}</p>
-                    <p>Profession: {{ hero.profession }}</p>
-                    <p>Niveau: {{ hero.lvl }}</p>
-                    <p>XP: {{ hero.xp }}</p>
-                </li>
+              <option value="{{ hero.id }}">{{ hero.name }}</option>
             {% endfor %}
-        </ul>
+          </select>
+
+          <select name="hero2" id="hero2" required>
+            <option value="">Sélectionnez le second héros</option>
+            {% for hero in heroes %}
+              <option value="{{ hero.id }}">{{ hero.name }}</option>
+            {% endfor %}
+          </select>
+
+          <button type="submit">Commencer le combat</button>
+        </form>
+      </div>
+
+      <ul class="hero-list">
+        {% for hero in heroes %}
+          <li>
+            <h2><a href="{% url 'hero_inventory' hero.hero_id %}">{{ hero.name }}</a></h2>
+            <p>Race: {{ hero.race.name }}</p>
+            <p>Classe: {{ hero.classe.name }}</p>
+            <p>Élément: {{ hero.element }}</p>
+            <p>Profession: {{ hero.profession }}</p>
+            <p>Niveau: {{ hero.lvl }}</p>
+            <p>XP: {{ hero.xp }}</p>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
-</body>
+    <script>
+      document.getElementById('combat-form').addEventListener('submit', function (e) {
+        e.preventDefault()
+        const hero1 = document.getElementById('hero1').value
+        const hero2 = document.getElementById('hero2').value
+      
+        if (hero1 === hero2) {
+          alert('Un héros ne peut pas combattre contre lui-même!')
+          return
+        }
+      
+        window.location.href = `/App/combat/${hero1}/${hero2}/`
+      })
+    </script>
+  </body>
 </html>
